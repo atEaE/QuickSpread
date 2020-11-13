@@ -1,7 +1,7 @@
-using System;
-using Xunit;
 using QuickSpread.Client;
 using QuickSpread.Client.GoogleSpreadSheet;
+using Xunit;
+using System.Collections.Generic;
 
 namespace Test_QuickSpread
 {
@@ -12,6 +12,7 @@ namespace Test_QuickSpread
         {
             var client = new ClientBuilder().Build("");
             client.IsInstanceOf<GoogleSpreadQuickClient>();
+            client.Export(exportCollections: new List<string>() { "Fizz", "Buzz" });
         }
     }
 }
