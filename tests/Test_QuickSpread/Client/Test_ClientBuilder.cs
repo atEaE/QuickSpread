@@ -15,6 +15,8 @@ namespace Test_QuickSpread
             client.Export(exportCollections: new List<Sample>() { new Sample(){ Name = "hoge", Piyo = 1 } });
         }
 
+
+
         public class Sample
         {
             public string Name;
