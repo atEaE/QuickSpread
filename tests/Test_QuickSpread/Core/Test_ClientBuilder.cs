@@ -12,7 +12,15 @@ namespace Test_QuickSpread
         {
             var client = new ClientBuilder().Build("");
             client.IsInstanceOf<GoogleSpreadQuickClient>();
-            client.Export(exportCollections: new List<string>() { "Fizz", "Buzz" });
+            client.Export(exportCollections: new List<Sample>() { new Sample(){ Name = "hoge", Piyo = 1 } });
+        }
+
+        public class Sample
+        {
+            public string Name;
+            public int Piyo;
         }
     }
+
+
 }
