@@ -12,7 +12,8 @@ namespace QuickSpread.Client
         /// Export to a specified spreadsheet.
         /// </summary>
         /// <param name="exportCollections">export collections</param>
+        /// <param name="options">export options</param>
         /// <exception cref="ArgumentNullException"></exception>
-        void Export<T>(IList<T> exportCollections);
+        void Export<T>(IList<T> exportCollections, ISpreadSheetOptions options = null);
     }
 }

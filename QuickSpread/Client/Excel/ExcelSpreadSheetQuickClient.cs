@@ -17,21 +17,59 @@ namespace QuickSpread.Client.Excel
         /// <summary>
         /// Generate a ExcelSpreadSheetQuickClient.
         /// </summary>
-        public static IQuickClient Build(this ClientBuilder _, string value)
+        public static IQuickClient Build(this ClientBuilder _, ExcelSpreadSheetSettings settings, string filePath)
         {
-            return new ExcelSpreadSheetQuickClient();
+            return new ExcelSpreadSheetQuickClient(settings: settings, filePath: filePath);
         }
     }
 
     public class ExcelSpreadSheetQuickClient : IQuickClient
     {
         /// <summary>
+        /// Microsoft Excel Format : xls (excel 97-2003)
+        /// </summary>
+        private const string HSSF_EXTENSION = ".xls";
+
+        /// <summary>
+        /// Office Open XML Workbook format : xlsx (excel 2007 -)
+        /// </summary>
+        private const string XSSF_EXTENSION = ".xlsx";
+
+        /// <summary>
+        /// filePath
+        /// </summary>
+        private string filePath;
+
+        /// <summary>
+        /// excel settings
+        /// </summary>
+        private ExcelSpreadSheetSettings settings;
+
+        /// <summary>
+        /// Create new instance.
+        /// </summary>
+        /// <param name="settings">excel settings</param>
+        /// <param name="filePath">filePath</param>
+        internal ExcelSpreadSheetQuickClient(ExcelSpreadSheetSettings settings, string filePath)
+        {
+            if (string.IsNullOrEmpty(filePath) || string.IsNullOrWhiteSpace(filePath))
+                throw new ArgumentNullException(nameof(filePath));
+
+            settings.Validate();
+
+            this.settings = settings;
+            this.filePath = filePath;
+        }
+
+        /// <summary>
         /// Export to a specified spreadsheet.
         /// </summary>
         /// <typeparam name="T">POCO with no internal List, Array or Class</typeparam>
         /// <param name="exportCollections">export collections</param>
+        /// <param name="options">excel options.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public void Export<T>(IList<T> exportCollections)
+        /// <exception cref="IOException"></exception>
+        public void Export<T>(IList<T> exportCollections, ISpreadSheetOptions options = null)
         {
             if (exportCollections == null)
                 throw new ArgumentNullException(nameof(exportCollections));
@@ -39,15 +77,25 @@ namespace QuickSpread.Client.Excel
             if (!exportCollections.Any())
                 return;
 
-            string filePath = @"C:\Users\EtaAoki\Desktop\新しいフォルダー\sample.xlsx";
+            if (File.Exists(filePath))
+                throw new IOException($"{filePath} already exists.");
+
+            ExcelSpreadSheetOptions excelOpt = null;
+            if (options != null)
+            {
+                if (!(options is ExcelSpreadSheetOptions))
+                    throw new ArgumentException($"The only Options that this class can receive are {nameof(ExcelSpreadSheetOptions)}.");
+
+                excelOpt = options as ExcelSpreadSheetOptions;
+            }
 
             IWorkbook book;
             var extension = Path.GetExtension(filePath);
-            if (extension == ".xls")
+            if (extension == HSSF_EXTENSION)
             {
                 book = new HSSFWorkbook();
             }
-            else if (extension == ".xlsx")
+            else if (extension == XSSF_EXTENSION)
             {
                 book = new XSSFWorkbook();
             }
@@ -56,11 +104,11 @@ namespace QuickSpread.Client.Excel
                 throw new ApplicationException("CreateNewBook: invalid extension");
             }
 
-            var sheet = book.CreateSheet("sheet1");
+            var sheet = book.CreateSheet(settings.SheetName);
 
             if (TypeUtil.IsPrimitive(typeof(T)))
             {
-                PrimitiveTypeExport(sheet, exportCollections);
+                PrimitiveTypeExport(sheet, exportCollections, excelOpt);
             }
             else
             {
@@ -73,17 +121,26 @@ namespace QuickSpread.Client.Excel
             }
         }
 
-        protected virtual void PrimitiveTypeExport<T>(ISheet sheet, IList<T> exportCollections)
+        protected virtual void PrimitiveTypeExport<T>(ISheet sheet, IList<T> exportCollections, ExcelSpreadSheetOptions options)
         {
             var rowIndex = 0;
-            foreach(var value in exportCollections)
+            var columnIndex = 0;
+
+            if (options != null)
+            {
+                rowIndex = (int)options.StartRowIndex;
+                columnIndex = (int)options.StartColumnIndex;
+            }
+
+            foreach (var value in exportCollections)
             {
                 var row = sheet.GetRow(rowIndex) ?? sheet.CreateRow(rowIndex);
-                var cell = row.GetCell(0) ?? row.CreateCell(0);
+                var cell = row.GetCell(columnIndex) ?? row.CreateCell(columnIndex);
                 cell.SetCellValue(value.ToString());
                 rowIndex++;
             }
         }
+
 
         protected virtual void ClassTypeExport<T>(ISheet sheet, IList<T> exportCollections) 
         {

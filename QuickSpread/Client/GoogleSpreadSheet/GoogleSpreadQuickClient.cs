@@ -36,8 +36,9 @@ namespace QuickSpread.Client.GoogleSpreadSheet
         /// </summary>
         /// <typeparam name="T">POCO with no internal List, Array or Class</typeparam>
         /// <param name="exportCollections">export collections</param>
+        /// <param name="options">excel options.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public void Export<T>(IList<T> exportCollections)
+        public void Export<T>(IList<T> exportCollections, ISpreadSheetOptions options = null)
         {
             if (exportCollections == null)
                 throw new ArgumentNullException(nameof(exportCollections));

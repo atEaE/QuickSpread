@@ -10,14 +10,14 @@ namespace Test_QuickSpread.Client.Excel
         [Fact]
         public void TestCreateExcelSpreadSheetQuickClient()
         {
-            var client = new ClientBuilder().Build("");
+            var client = new ClientBuilder().Build(ExcelSpreadSheetSettings.Default(), @"C:\Users\EtaAoki\Desktop\新しいフォルダー\sample.xlsx");
             var coll = new List<Sample>()
             {
                 new Sample(){ Name = "hoge", Age = 21},
                 new Sample(){ Name = "huga", Age = 22},
                 new Sample(){ Name = "kusa", Age = 23},
             };
-            client.Export(coll);
+            client.Export(new string[] { "hogehoe", "hugahuga", "piyopiyo"}, new ExcelSpreadSheetOptions() { StartRowIndex = 2, StartColumnIndex = 3 });
         }
 
 
