@@ -30,9 +30,8 @@ namespace QuickSpread.Client.Excel
         /// </summary>
         public void Validate()
         {
-            // TODO : 正しいExceptionを設定する。
             if (string.IsNullOrEmpty(SheetName) || string.IsNullOrWhiteSpace(SheetName))
-                throw new Exception("");
+                throw new ApplicationException("The sheet name has not been set.");
         }
     }
 }

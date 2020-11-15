@@ -1,30 +1,73 @@
 ﻿using QuickSpread.Client;
 using QuickSpread.Client.Excel;
+using System;
 using Xunit;
-using System.Collections.Generic;
 
 namespace Test_QuickSpread.Client.Excel
 {
     public class Test_ExcelSpreadSheetQuickClient
     {
         [Fact]
-        public void TestCreateExcelSpreadSheetQuickClient()
+        public void TestCreateExcelSpreadSheetQuickClient_SettingsError_SheetName()
         {
-            var client = new ClientBuilder().Build(ExcelSpreadSheetSettings.Default(), @"C:\Users\EtaAoki\Desktop\新しいフォルダー\sample.xlsx");
-            var coll = new List<Sample>()
+            // setup
+            var settings = new ExcelSpreadSheetSettings();
+
+            // string.Empty
+            Assert.Throws<ApplicationException>(() =>
             {
-                new Sample(){ Name = "hoge", Age = 21},
-                new Sample(){ Name = "huga", Age = 22},
-                new Sample(){ Name = "kusa", Age = 23},
-            };
-            client.Export(new string[] { "hogehoe", "hugahuga", "piyopiyo"}, new ExcelSpreadSheetOptions() { StartRowIndex = 2, StartColumnIndex = 3 });
+                settings.SheetName = string.Empty;
+                var client = new ClientBuilder().Build(settings, "./sample.xlsx");
+            }).Message.Is("The sheet name has not been set.");
+
+            // ""
+            Assert.Throws<ApplicationException>(() =>
+            {
+                settings.SheetName = "";
+                var client = new ClientBuilder().Build(settings, "./sample.xlsx");
+            }).Message.Is("The sheet name has not been set.");
+
+            // null
+            Assert.Throws<ApplicationException>(() =>
+            {
+                settings.SheetName = null;
+                var client = new ClientBuilder().Build(settings, "./sample.xlsx");
+            }).Message.Is("The sheet name has not been set.");
+
+            // brank
+            Assert.Throws<ApplicationException>(() =>
+            {
+                settings.SheetName = " ";
+                var client = new ClientBuilder().Build(settings, "./sample.xlsx");
+            }).Message.Is("The sheet name has not been set.");
         }
 
-
-        public class Sample
+        [Fact]
+        public void TestCreateExcelSpreadSheetQuickClient_FilepathError()
         {
-            public string Name;
-            public int Age;
+            // string.empty
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                var client = new ClientBuilder().Build(ExcelSpreadSheetSettings.Default(), string.Empty);
+            }).Message.Is("Value cannot be null. (Parameter 'filePath')");
+
+            // ""
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                var client = new ClientBuilder().Build(ExcelSpreadSheetSettings.Default(), "");
+            }).Message.Is("Value cannot be null. (Parameter 'filePath')");
+
+            // null
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                var client = new ClientBuilder().Build(ExcelSpreadSheetSettings.Default(), null);
+            }).Message.Is("Value cannot be null. (Parameter 'filePath')");
+
+            // brank
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                var client = new ClientBuilder().Build(ExcelSpreadSheetSettings.Default(), " ");
+            }).Message.Is("Value cannot be null. (Parameter 'filePath')");
         }
     }
 }

@@ -112,7 +112,7 @@ namespace QuickSpread.Client.Excel
             }
             else
             {
-                ClassTypeExport(sheet, exportCollections);
+                ClassTypeExport(sheet, exportCollections, excelOpt);
             }
 
             using (var fs = new FileStream(filePath, FileMode.Create))
@@ -121,6 +121,13 @@ namespace QuickSpread.Client.Excel
             }
         }
 
+        /// <summary>
+        /// Outputs primitive type.
+        /// </summary>
+        /// <typeparam name="T">any primitive types.</typeparam>
+        /// <param name="sheet">excel sheet.</param>
+        /// <param name="exportCollections">export any collections.</param>
+        /// <param name="options">excel sheet options.</param>
         protected virtual void PrimitiveTypeExport<T>(ISheet sheet, IList<T> exportCollections, ExcelSpreadSheetOptions options)
         {
             var rowIndex = 0;
@@ -141,27 +148,38 @@ namespace QuickSpread.Client.Excel
             }
         }
 
-
-        protected virtual void ClassTypeExport<T>(ISheet sheet, IList<T> exportCollections) 
+        /// <summary>
+        /// Outputs class type.
+        /// </summary>
+        /// <typeparam name="T">any class types.</typeparam>
+        /// <param name="sheet">excel sheet.</param>
+        /// <param name="exportCollections">export any collections.</param>
+        /// <param name="options">excel sheet options.</param>
+        protected virtual void ClassTypeExport<T>(ISheet sheet, IList<T> exportCollections, ExcelSpreadSheetOptions options) 
         {
-            var gType = typeof(T);
-            var properties = gType.GetProperties();
-            var props = gType.GetFields();
+            var rowIndex = 0;
+            var columnIndex = 0;
+
+            if (options != null)
+            {
+                rowIndex = (int)options.StartRowIndex;
+                columnIndex = (int)options.StartColumnIndex;
+            }
 
             var hColIndex = 0;
-            foreach (var prop in gType.GetFields())
+            foreach (var prop in typeof(T).GetFields())
             {
-                var row = sheet.GetRow(0) ?? sheet.CreateRow(0);
+                var row = sheet.GetRow(rowIndex) ?? sheet.CreateRow(rowIndex);
                 var cell = row.GetCell(hColIndex) ?? row.CreateCell(hColIndex);
                 cell.SetCellValue(prop.Name);
                 hColIndex++;
             }
 
-            var rowIndex = 1;
+            rowIndex = rowIndex + 1;
             foreach (var value in exportCollections)
             {
-                var colIndex = 0;
-                foreach(var prop in gType.GetFields())
+                var colIndex = columnIndex;
+                foreach(var prop in typeof(T).GetFields())
                 {
                     var row = sheet.GetRow(rowIndex) ?? sheet.CreateRow(rowIndex);
                     var cell = row.GetCell(colIndex) ?? row.CreateCell(colIndex);
