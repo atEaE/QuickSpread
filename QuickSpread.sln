@@ -16,7 +16,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{2485DE7E-C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickSpread", "QuickSpread\QuickSpread.csproj", "{36EAFA06-5838-45B7-8853-3CDC0997DE48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test_QuickSpread", "tests\Test_QuickSpread\Test_QuickSpread.csproj", "{DBE34FBB-FA83-4005-B51F-EF3374572E99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test_QuickSpread", "tests\Test_QuickSpread\Test_QuickSpread.csproj", "{DBE34FBB-FA83-4005-B51F-EF3374572E99}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{7558127E-2E88-4FE6-82A0-4E5EDD27178F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dotnet.Core.Sample", "examples\Dotnet.Core.Sample\Dotnet.Core.Sample.csproj", "{0678851D-6D82-482E-8B34-2BF8FAC6DF4A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dotnet.Framework.Sample", "Dotnet.Framework.Sample\Dotnet.Framework.Sample.csproj", "{883CFAD2-31DB-48E1-B785-F2331C3146EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +38,14 @@ Global
 		{DBE34FBB-FA83-4005-B51F-EF3374572E99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBE34FBB-FA83-4005-B51F-EF3374572E99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DBE34FBB-FA83-4005-B51F-EF3374572E99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0678851D-6D82-482E-8B34-2BF8FAC6DF4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0678851D-6D82-482E-8B34-2BF8FAC6DF4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0678851D-6D82-482E-8B34-2BF8FAC6DF4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0678851D-6D82-482E-8B34-2BF8FAC6DF4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{883CFAD2-31DB-48E1-B785-F2331C3146EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{883CFAD2-31DB-48E1-B785-F2331C3146EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{883CFAD2-31DB-48E1-B785-F2331C3146EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{883CFAD2-31DB-48E1-B785-F2331C3146EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +53,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{36EAFA06-5838-45B7-8853-3CDC0997DE48} = {890CACB4-5804-43B5-8E62-26BADD11CE37}
 		{DBE34FBB-FA83-4005-B51F-EF3374572E99} = {6F1EF13C-4852-4B2F-AB3F-6D0697DE3EF3}
+		{0678851D-6D82-482E-8B34-2BF8FAC6DF4A} = {7558127E-2E88-4FE6-82A0-4E5EDD27178F}
+		{883CFAD2-31DB-48E1-B785-F2331C3146EC} = {7558127E-2E88-4FE6-82A0-4E5EDD27178F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {95A88ADD-9BA6-4626-8307-D45138AB553B}
