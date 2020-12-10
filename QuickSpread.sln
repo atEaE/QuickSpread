@@ -22,7 +22,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{75
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dotnet.Core.Sample", "examples\Dotnet.Core.Sample\Dotnet.Core.Sample.csproj", "{0678851D-6D82-482E-8B34-2BF8FAC6DF4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dotnet.Framework.Sample", "Dotnet.Framework.Sample\Dotnet.Framework.Sample.csproj", "{883CFAD2-31DB-48E1-B785-F2331C3146EC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dotnet.Framework.Sample", "examples\Dotnet.Framework.Sample\Dotnet.Framework.Sample.csproj", "{883CFAD2-31DB-48E1-B785-F2331C3146EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
