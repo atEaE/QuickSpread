@@ -167,7 +167,7 @@ namespace QuickSpread.Client.Excel
             }
 
             var hColIndex = 0;
-            foreach (var prop in typeof(T).GetFields())
+            foreach (var prop in typeof(T).GetProperties())
             {
                 var row = sheet.GetRow(rowIndex) ?? sheet.CreateRow(rowIndex);
                 var cell = row.GetCell(hColIndex) ?? row.CreateCell(hColIndex);
@@ -179,7 +179,7 @@ namespace QuickSpread.Client.Excel
             foreach (var value in exportCollections)
             {
                 var colIndex = columnIndex;
-                foreach(var prop in typeof(T).GetFields())
+                foreach(var prop in typeof(T).GetProperties())
                 {
                     var row = sheet.GetRow(rowIndex) ?? sheet.CreateRow(rowIndex);
                     var cell = row.GetCell(colIndex) ?? row.CreateCell(colIndex);

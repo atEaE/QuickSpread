@@ -6,11 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\QuickSpread\QuickSpread.csproj" />
+    <PackageReference Include="AutoFixture" Version="4.15.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Model\" />
+    <ProjectReference Include="..\..\QuickSpread\QuickSpread.csproj" />
   </ItemGroup>
 
 </Project>

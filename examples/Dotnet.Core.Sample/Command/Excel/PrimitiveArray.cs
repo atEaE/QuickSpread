@@ -15,7 +15,7 @@ namespace Dotnet.Core.Sample.Command.Excel
         /// <summary>
         /// Output base directory.
         /// </summary>
-        protected string BaseOutputDirectory => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "excel_example");
+        protected string BaseOutputDirectory => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "excel_example_dotnet_core");
 
         /// <summary>
         /// Output file path.
