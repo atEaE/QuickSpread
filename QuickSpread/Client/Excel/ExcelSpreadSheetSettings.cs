@@ -3,6 +3,27 @@
 namespace QuickSpread.Client.Excel
 {
     /// <summary>
+    /// Set where the spreadsheet header information will be read from.
+    /// </summary>
+    public enum ReadHeaderInfo
+    {
+        /// <summary>
+        /// Reads the header information from the property.
+        /// </summary>
+        Property,
+
+        /// <summary>
+        /// Reads the header information from the field.
+        /// </summary>
+        Field,
+
+        /// <summary>
+        /// Reads the header information from the property and field.
+        /// </summary>
+        PropertyAndField,
+    }
+
+    /// <summary>
     /// Excel spread sheet options.
     /// </summary>
     public class ExcelSpreadSheetSettings : ISpreadSheetSettings
@@ -14,6 +35,11 @@ namespace QuickSpread.Client.Excel
         public string SheetName { get; set; }
 
         /// <summary>
+        /// Set where the spreadsheet header information will be read from.
+        /// </summary>
+        public ReadHeaderInfo ReadHeaderInfo { get; set; }
+
+        /// <summary>
         /// Gets the default value of Excel settings.
         /// </summary>
         /// <returns>default settings.</returns>
@@ -22,6 +48,7 @@ namespace QuickSpread.Client.Excel
             return new ExcelSpreadSheetSettings()
             {
                 SheetName = "Sheet1",
+                ReadHeaderInfo = ReadHeaderInfo.Property,
             };
         }
 
@@ -32,6 +59,8 @@ namespace QuickSpread.Client.Excel
         {
             if (string.IsNullOrEmpty(SheetName) || string.IsNullOrWhiteSpace(SheetName))
                 throw new ApplicationException("The sheet name has not been set.");
+
+
         }
     }
 }

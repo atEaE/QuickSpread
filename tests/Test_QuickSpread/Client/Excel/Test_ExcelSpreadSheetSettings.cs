@@ -13,6 +13,7 @@ namespace Test_QuickSpread.Client.Excel
             var settings = new ExcelSpreadSheetSettings();
 
             settings.SheetName.IsNull();
+            settings.ReadHeaderInfo.Is(ReadHeaderInfo.Property);
         }
 
         [Fact]
@@ -22,6 +23,7 @@ namespace Test_QuickSpread.Client.Excel
             var settings = ExcelSpreadSheetSettings.Default();
 
             settings.SheetName.Is("Sheet1");
+            settings.ReadHeaderInfo.Is(ReadHeaderInfo.Property);
         }
 
         [Fact]
@@ -46,6 +48,26 @@ namespace Test_QuickSpread.Client.Excel
             // brank 
             settings.SheetName = " ";
             Assert.Throws<ApplicationException>(() => { settings.Validate(); }).Message.Is("The sheet name has not been set.");
+        }
+
+        [Fact]
+        public void TestCheckValidate_ReadHeaderInfo()
+        {
+            // setup
+            var settings = ExcelSpreadSheetSettings.Default();
+            settings.Validate();
+
+            // field
+            settings.ReadHeaderInfo = ReadHeaderInfo.Field;
+            settings.ReadHeaderInfo.Is(ReadHeaderInfo.Field);
+
+            // prop and field
+            settings.ReadHeaderInfo = ReadHeaderInfo.PropertyAndField;
+            settings.ReadHeaderInfo.Is(ReadHeaderInfo.PropertyAndField);
+
+            // prop 
+            settings.ReadHeaderInfo = ReadHeaderInfo.Property;
+            settings.ReadHeaderInfo.Is(ReadHeaderInfo.Property);
         }
     }
 }
