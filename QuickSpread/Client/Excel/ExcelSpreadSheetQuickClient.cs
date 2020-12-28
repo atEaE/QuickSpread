@@ -23,6 +23,9 @@ namespace QuickSpread.Client.Excel
         }
     }
 
+    /// <summary>
+    /// QuickClient for Excel
+    /// </summary>
     public class ExcelSpreadSheetQuickClient : IQuickClient
     {
         /// <summary>
@@ -159,6 +162,7 @@ namespace QuickSpread.Client.Excel
         {
             var rowIndex = 0;
             var columnIndex = 0;
+            var gType = typeof(T);
 
             if (options != null)
             {
@@ -166,25 +170,52 @@ namespace QuickSpread.Client.Excel
                 columnIndex = (int)options.StartColumnIndex;
             }
 
-            var hColIndex = 0;
-            foreach (var prop in typeof(T).GetProperties())
+            var hColIndex = columnIndex;
+            if (ReadHeaderInfo.Property == settings.ReadHeaderInfo || ReadHeaderInfo.PropertyAndField == settings.ReadHeaderInfo)
             {
-                var row = sheet.GetRow(rowIndex) ?? sheet.CreateRow(rowIndex);
-                var cell = row.GetCell(hColIndex) ?? row.CreateCell(hColIndex);
-                cell.SetCellValue(prop.Name);
-                hColIndex++;
+                foreach (var prop in gType.GetProperties())
+                {
+                    var row = sheet.GetRow(rowIndex) ?? sheet.CreateRow(rowIndex);
+                    var cell = row.GetCell(hColIndex) ?? row.CreateCell(hColIndex);
+                    cell.SetCellValue(prop.Name);
+                    hColIndex++;
+                }
             }
+            if (ReadHeaderInfo.Field == settings.ReadHeaderInfo || ReadHeaderInfo.PropertyAndField == settings.ReadHeaderInfo)
+            {
+                foreach (var field in gType.GetFields())
+                {
+                    var row = sheet.GetRow(rowIndex) ?? sheet.CreateRow(rowIndex);
+                    var cell = row.GetCell(hColIndex) ?? row.CreateCell(hColIndex);
+                    cell.SetCellValue(field.Name);
+                    hColIndex++;
+                }
+            }
+
 
             rowIndex = rowIndex + 1;
             foreach (var value in exportCollections)
             {
                 var colIndex = columnIndex;
-                foreach(var prop in typeof(T).GetProperties())
+                if (ReadHeaderInfo.Property == settings.ReadHeaderInfo || ReadHeaderInfo.PropertyAndField == settings.ReadHeaderInfo)
                 {
-                    var row = sheet.GetRow(rowIndex) ?? sheet.CreateRow(rowIndex);
-                    var cell = row.GetCell(colIndex) ?? row.CreateCell(colIndex);
-                    cell.SetCellValue(prop.GetValue(value).ToString());
-                    colIndex++;
+                    foreach (var prop in gType.GetProperties())
+                    {
+                        var row = sheet.GetRow(rowIndex) ?? sheet.CreateRow(rowIndex);
+                        var cell = row.GetCell(colIndex) ?? row.CreateCell(colIndex);
+                        cell.SetCellValue(prop.GetValue(value).ToString());
+                        colIndex++;
+                    }
+                }
+                if (ReadHeaderInfo.Field == settings.ReadHeaderInfo || ReadHeaderInfo.PropertyAndField == settings.ReadHeaderInfo)
+                {
+                    foreach (var field in gType.GetFields())
+                    {
+                        var row = sheet.GetRow(rowIndex) ?? sheet.CreateRow(rowIndex);
+                        var cell = row.GetCell(colIndex) ?? row.CreateCell(colIndex);
+                        cell.SetCellValue(field.GetValue(value).ToString());
+                        colIndex++;
+                    }
                 }
                 rowIndex++;
             }
