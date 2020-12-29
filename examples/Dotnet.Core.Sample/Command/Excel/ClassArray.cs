@@ -30,8 +30,9 @@ namespace Dotnet.Core.Sample.Command.Excel
         /// </summary>
         protected override void OnExecute()
         {
-            
-            var client = new ClientBuilder().Build(ExcelSpreadSheetSettings.Default(), OutputFilePath);
+            var settings = ExcelSpreadSheetSettings.Default();
+            settings.ReadHeaderInfo = ReadHeaderInfo.PropertyAndField;
+            var client = new ClientBuilder().Build(settings, OutputFilePath);
             var list = createOutputModel();
 
             if (!Directory.Exists(BaseOutputDirectory))
