@@ -104,7 +104,7 @@ namespace QuickSpread.Client.Excel
             }
             else
             {
-                throw new ApplicationException("CreateNewBook: invalid extension");
+                throw new ApplicationException($@"Invalid extension has been specified. Valid extensions are either '{HSSF_EXTENSION}' or '{XSSF_EXTENSION}'.");
             }
 
             var sheet = book.CreateSheet(settings.SheetName);
@@ -144,9 +144,7 @@ namespace QuickSpread.Client.Excel
 
             foreach (var value in exportCollections)
             {
-                var row = sheet.GetRow(rowIndex) ?? sheet.CreateRow(rowIndex);
-                var cell = row.GetCell(columnIndex) ?? row.CreateCell(columnIndex);
-                cell.SetCellValue(value.ToString());
+                setCellValue(sheet: sheet, rowIndex: rowIndex, columnIndex: columnIndex, value);
                 rowIndex++;
             }
         }
@@ -201,9 +199,7 @@ namespace QuickSpread.Client.Excel
                 {
                     foreach (var prop in gType.GetProperties())
                     {
-                        var row = sheet.GetRow(rowIndex) ?? sheet.CreateRow(rowIndex);
-                        var cell = row.GetCell(colIndex) ?? row.CreateCell(colIndex);
-                        cell.SetCellValue(prop.GetValue(value).ToString());
+                        setCellValue(sheet: sheet, rowIndex: rowIndex, columnIndex: colIndex, prop.GetValue(value));
                         colIndex++;
                     }
                 }
@@ -211,13 +207,42 @@ namespace QuickSpread.Client.Excel
                 {
                     foreach (var field in gType.GetFields())
                     {
-                        var row = sheet.GetRow(rowIndex) ?? sheet.CreateRow(rowIndex);
-                        var cell = row.GetCell(colIndex) ?? row.CreateCell(colIndex);
-                        cell.SetCellValue(field.GetValue(value).ToString());
+                        setCellValue(sheet: sheet, rowIndex: rowIndex, columnIndex: colIndex, field.GetValue(value));
                         colIndex++;
                     }
                 }
                 rowIndex++;
+            }
+        }
+
+        /// <summary>
+        /// Set the value in the cell.
+        /// </summary>
+        /// <typeparam name="T">any primitive type.</typeparam>
+        /// <param name="sheet">sheet instance.</param>
+        /// <param name="rowIndex">row index.</param>
+        /// <param name="columnIndex">column index.</param>
+        /// <param name="value">set value.</param>
+        private void setCellValue<T>(ISheet sheet, int rowIndex, int columnIndex, T value)
+        {
+            var row = sheet.GetRow(rowIndex) ?? sheet.CreateRow(rowIndex);
+            var cell = row.GetCell(columnIndex) ?? row.CreateCell(columnIndex);
+            
+            if (value is bool)
+            {
+                var tValue = value as bool?;
+                cell.SetCellValue(tValue.Value);
+            }
+
+            if (value is int || value is float || value is double)
+            {
+                var tValue = double.Parse(value.ToString());
+                cell.SetCellValue(tValue);
+            }
+
+            if (value is string)
+            {
+                cell.SetCellValue(value.ToString());
             }
         }
     }
