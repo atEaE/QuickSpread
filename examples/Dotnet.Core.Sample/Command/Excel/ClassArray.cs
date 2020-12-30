@@ -16,28 +16,36 @@ namespace Dotnet.Core.Sample.Command.Excel
     public class ClassArray : CommandBase
     {
         /// <summary>
-        /// Output base directory.
-        /// </summary>
-        protected string BaseOutputDirectory => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "excel_example_dotnet_core");
-
-        /// <summary>
         /// Output file path.
         /// </summary>
-        protected override string OutputFilePath => Path.Combine(BaseOutputDirectory, "class_sample.xlsx");
+        protected override string OutputFilePath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "excel_example_dotnet_core");
 
         /// <summary>
         /// On Execute the command.
         /// </summary>
         protected override void OnExecute()
         {
-            var settings = ExcelSpreadSheetSettings.Default();
-            settings.ReadHeaderInfo = ReadHeaderInfo.PropertyAndField;
-            var client = new ClientBuilder().Build(settings, OutputFilePath);
+            var clients = new List<IQuickClient>();
+
+            var pSettings = ExcelSpreadSheetSettings.Default();
+            var propClient = new ClientBuilder().Build(pSettings, Path.Combine(OutputFilePath, "prop_example.xlsx"));
+            clients.Add(propClient);
+
+            var fSettings = ExcelSpreadSheetSettings.Default();
+            fSettings.ReadHeaderInfo = ReadHeaderInfo.Field;
+            var fildClient = new ClientBuilder().Build(fSettings, Path.Combine(OutputFilePath, "field_example.xlsx"));
+            clients.Add(fildClient);
+
+            var pfSettings = ExcelSpreadSheetSettings.Default();
+            pfSettings.ReadHeaderInfo = ReadHeaderInfo.PropertyAndField;
+            var pAndFClient = new ClientBuilder().Build(pfSettings, Path.Combine(OutputFilePath, "prop_field_example.xlsx"));
+            clients.Add(pAndFClient);
+
             var list = createOutputModel();
 
-            if (!Directory.Exists(BaseOutputDirectory))
+            if (!Directory.Exists(OutputFilePath))
             {
-                Directory.CreateDirectory(BaseOutputDirectory);
+                Directory.CreateDirectory(OutputFilePath);
             }
             if (File.Exists(OutputFilePath))
             {
@@ -45,10 +53,14 @@ namespace Dotnet.Core.Sample.Command.Excel
             }
             else
             {
-                client.Export(list);
+                clients.AsParallel().ForAll(c => c.Export(list));
             }
         }
 
+        /// <summary>
+        /// Create sample model.
+        /// </summary>
+        /// <returns>sample model.</returns>
         private List<SampleModel> createOutputModel()
         {
             return Enumerable.Range(0, 100).Select(_ =>

@@ -1,6 +1,7 @@
 ﻿using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using NPOI.XSSF.Model;
 using QuickSpread.Util;
 using System;
 using System.Collections.Generic;
@@ -107,15 +108,13 @@ namespace QuickSpread.Client.Excel
                 throw new ApplicationException($@"Invalid extension has been specified. Valid extensions are either '{HSSF_EXTENSION}' or '{XSSF_EXTENSION}'.");
             }
 
-            var sheet = book.CreateSheet(settings.SheetName);
-
             if (TypeUtil.IsPrimitive(typeof(T)))
             {
-                PrimitiveTypeExport(sheet, exportCollections, excelOpt);
+                PrimitiveTypeExport(book, exportCollections, excelOpt);
             }
             else
             {
-                ClassTypeExport(sheet, exportCollections, excelOpt);
+                ClassTypeExport(book, exportCollections, excelOpt);
             }
 
             using (var fs = new FileStream(filePath, FileMode.Create))
@@ -128,10 +127,10 @@ namespace QuickSpread.Client.Excel
         /// Outputs primitive type.
         /// </summary>
         /// <typeparam name="T">any primitive types.</typeparam>
-        /// <param name="sheet">excel sheet.</param>
+        /// <param name="book">excel sheet.</param>
         /// <param name="exportCollections">export any collections.</param>
         /// <param name="options">excel sheet options.</param>
-        protected virtual void PrimitiveTypeExport<T>(ISheet sheet, IList<T> exportCollections, ExcelSpreadSheetOptions options)
+        protected virtual void PrimitiveTypeExport<T>(IWorkbook book, IList<T> exportCollections, ExcelSpreadSheetOptions options)
         {
             var rowIndex = 0;
             var columnIndex = 0;
@@ -142,9 +141,12 @@ namespace QuickSpread.Client.Excel
                 columnIndex = (int)options.StartColumnIndex;
             }
 
+            var sheet = book.CreateSheet(settings.SheetName);
+            var style = book.CreateCellStyle();
+
             foreach (var value in exportCollections)
             {
-                setCellValue(sheet: sheet, rowIndex: rowIndex, columnIndex: columnIndex, value);
+                setCellValue(sheet: sheet, style: style, rowIndex: rowIndex, columnIndex: columnIndex, value);
                 rowIndex++;
             }
         }
@@ -153,10 +155,10 @@ namespace QuickSpread.Client.Excel
         /// Outputs class type.
         /// </summary>
         /// <typeparam name="T">any class types.</typeparam>
-        /// <param name="sheet">excel sheet.</param>
+        /// <param name="book">excel sheet.</param>
         /// <param name="exportCollections">export any collections.</param>
         /// <param name="options">excel sheet options.</param>
-        protected virtual void ClassTypeExport<T>(ISheet sheet, IList<T> exportCollections, ExcelSpreadSheetOptions options) 
+        protected virtual void ClassTypeExport<T>(IWorkbook book, IList<T> exportCollections, ExcelSpreadSheetOptions options) 
         {
             var rowIndex = 0;
             var columnIndex = 0;
@@ -167,6 +169,10 @@ namespace QuickSpread.Client.Excel
                 rowIndex = (int)options.StartRowIndex;
                 columnIndex = (int)options.StartColumnIndex;
             }
+
+            var sheet = book.CreateSheet(settings.SheetName);
+            var style = book.CreateCellStyle();
+            style.DataFormat = book.CreateDataFormat().GetFormat("MM/dd/yyyy HH:mm:ss");
 
             var hColIndex = columnIndex;
             if (ReadHeaderInfo.Property == settings.ReadHeaderInfo || ReadHeaderInfo.PropertyAndField == settings.ReadHeaderInfo)
@@ -199,7 +205,7 @@ namespace QuickSpread.Client.Excel
                 {
                     foreach (var prop in gType.GetProperties())
                     {
-                        setCellValue(sheet: sheet, rowIndex: rowIndex, columnIndex: colIndex, prop.GetValue(value));
+                        setCellValue(sheet: sheet, style: style, rowIndex: rowIndex, columnIndex: colIndex, prop.GetValue(value));
                         colIndex++;
                     }
                 }
@@ -207,7 +213,7 @@ namespace QuickSpread.Client.Excel
                 {
                     foreach (var field in gType.GetFields())
                     {
-                        setCellValue(sheet: sheet, rowIndex: rowIndex, columnIndex: colIndex, field.GetValue(value));
+                        setCellValue(sheet: sheet, style: style, rowIndex: rowIndex, columnIndex: colIndex, field.GetValue(value));
                         colIndex++;
                     }
                 }
@@ -220,10 +226,11 @@ namespace QuickSpread.Client.Excel
         /// </summary>
         /// <typeparam name="T">any primitive type.</typeparam>
         /// <param name="sheet">sheet instance.</param>
+        /// <param name="style">cell style.</param>
         /// <param name="rowIndex">row index.</param>
         /// <param name="columnIndex">column index.</param>
         /// <param name="value">set value.</param>
-        private void setCellValue<T>(ISheet sheet, int rowIndex, int columnIndex, T value)
+        private void setCellValue<T>(ISheet sheet, ICellStyle style, int rowIndex, int columnIndex, T value)
         {
             var row = sheet.GetRow(rowIndex) ?? sheet.CreateRow(rowIndex);
             var cell = row.GetCell(columnIndex) ?? row.CreateCell(columnIndex);
@@ -243,6 +250,13 @@ namespace QuickSpread.Client.Excel
             if (value is string)
             {
                 cell.SetCellValue(value.ToString());
+            }
+
+            if (value is DateTime)
+            {
+                var tValue = value as DateTime?;
+                cell.CellStyle = style;
+                cell.SetCellValue(tValue.Value);
             }
         }
     }
