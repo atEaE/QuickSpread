@@ -142,7 +142,7 @@ namespace QuickSpread.Client.Excel
             }
 
             var sheet = book.CreateSheet(settings.SheetName);
-            var style = book.CreateCellStyle();
+            var style = createCellStyleForDateTime(book);
 
             foreach (var value in exportCollections)
             {
@@ -171,8 +171,7 @@ namespace QuickSpread.Client.Excel
             }
 
             var sheet = book.CreateSheet(settings.SheetName);
-            var style = book.CreateCellStyle();
-            style.DataFormat = book.CreateDataFormat().GetFormat("MM/dd/yyyy HH:mm:ss");
+            var style = createCellStyleForDateTime(book);
 
             var hColIndex = columnIndex;
             if (ReadHeaderInfo.Property == settings.ReadHeaderInfo || ReadHeaderInfo.PropertyAndField == settings.ReadHeaderInfo)
@@ -258,6 +257,18 @@ namespace QuickSpread.Client.Excel
                 cell.CellStyle = style;
                 cell.SetCellValue(tValue.Value);
             }
+        }
+
+        /// <summary>
+        /// Generates a cell style for date formatting.
+        /// </summary>
+        /// <param name="book">excel sheet.</param>
+        /// <returns>cell style.</returns>
+        private ICellStyle createCellStyleForDateTime(IWorkbook book)
+        {
+            var style = book.CreateCellStyle();
+            style.DataFormat = book.CreateDataFormat().GetFormat("yyyy/MM/dd HH:mm:ss");
+            return style;
         }
     }
 }
