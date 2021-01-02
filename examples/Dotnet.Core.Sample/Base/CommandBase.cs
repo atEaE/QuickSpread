@@ -3,7 +3,7 @@
 namespace Dotnet.Core.Sample.Base
 {
     /// <summary>
-    /// Command interface
+    /// Command abstract class
     /// </summary>
     public abstract class CommandBase
     {
