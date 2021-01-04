@@ -59,8 +59,6 @@ namespace QuickSpread.Client.Excel
         {
             if (string.IsNullOrEmpty(SheetName) || string.IsNullOrWhiteSpace(SheetName))
                 throw new ApplicationException("The sheet name has not been set.");
-
-
         }
     }
 }
