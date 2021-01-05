@@ -197,7 +197,6 @@ namespace QuickSpread.Client.Excel
                 }
             }
 
-
             rowIndex = rowIndex + 1;
             foreach (var value in exportCollections)
             {

@@ -1,14 +1,22 @@
 ﻿namespace QuickSpread.Client.Excel
 {
     /// <summary>
-    /// Datetime cell format
+    /// Cell format
     /// </summary>
-    public struct DateTimeFormat
+    public struct CellFormat
     {
         /// <summary>
         /// format.
         /// </summary>
         internal string Format { get; set; }
+    }
+
+    public class DateTimeFormat
+    {
+        /// <summary>
+        /// Datetime fomat → yyyy/MM/dd HH:mm:ss
+        /// </summary>
+        public static CellFormat yyyyMMdd_HHmmss = new CellFormat() { Format = "yyyy/MM/dd HH:mm:ss" };
     }
 
     /// <summary>
@@ -29,7 +37,7 @@
         /// <summary>
         /// Cell format for Datetime.
         /// </summary>
-        public DateTimeFormat DataTimeCellFormat { get; set; } = new DateTimeFormat { Format = "yyyy/MM/dd HH:mm:ss" };
+        public CellFormat DataTimeCellFormat { get; set; } = DateTimeFormat.yyyyMMdd_HHmmss;
 
         /// <summary>
         /// Evaluate the effectiveness.
